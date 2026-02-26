@@ -6,8 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	atlassian "github.com/surajsinghrajput/go-atlassian-cloud/client"
-	"github.com/surajsinghrajput/go-atlassian-cloud/types"
+	atlassian "github.com/surajrajput1024/go-atlassian-cloud/client"
+	"github.com/surajrajput1024/go-atlassian-cloud/types"
 )
 
 func TestGetIssueTypes(t *testing.T) {

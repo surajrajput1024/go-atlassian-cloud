@@ -3,9 +3,9 @@ package jira
 import (
 	"net/url"
 
-	"github.com/surajsinghrajput/go-atlassian-cloud/constants"
-	"github.com/surajsinghrajput/go-atlassian-cloud/types"
-	"github.com/surajsinghrajput/go-atlassian-cloud/util"
+	"github.com/surajrajput1024/go-atlassian-cloud/constants"
+	"github.com/surajrajput1024/go-atlassian-cloud/types"
+	"github.com/surajrajput1024/go-atlassian-cloud/util"
 )
 
 func (j *Client) GetProject(projectIDOrKey string) (*types.ProjectResponse, error) {

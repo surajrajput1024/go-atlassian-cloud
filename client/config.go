@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"strings"
 
-	httputil "github.com/surajsinghrajput/go-atlassian-cloud/client/http"
+	httputil "github.com/surajrajput1024/go-atlassian-cloud/client/http"
 )
 
 type Config struct {

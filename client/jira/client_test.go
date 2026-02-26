@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	atlassian "github.com/surajsinghrajput/go-atlassian-cloud/client"
+	atlassian "github.com/surajrajput1024/go-atlassian-cloud/client"
 )
 
 func TestNew(t *testing.T) {

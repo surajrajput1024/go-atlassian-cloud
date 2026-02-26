@@ -1,8 +1,8 @@
 package jira
 
 import (
-	"github.com/surajsinghrajput/go-atlassian-cloud/constants"
-	"github.com/surajsinghrajput/go-atlassian-cloud/types"
+	"github.com/surajrajput1024/go-atlassian-cloud/constants"
+	"github.com/surajrajput1024/go-atlassian-cloud/types"
 )
 
 func (j *Client) GetPriorities() ([]types.PriorityResponse, error) {

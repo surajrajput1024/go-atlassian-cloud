@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/surajsinghrajput/go-atlassian-cloud/types"
+	"github.com/surajrajput1024/go-atlassian-cloud/types"
 )
 
 func (c *Client) ResolveCloudID() (string, error) {

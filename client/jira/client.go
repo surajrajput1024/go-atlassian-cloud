@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strings"
 
-	atlassian "github.com/surajsinghrajput/go-atlassian-cloud/client"
+	atlassian "github.com/surajrajput1024/go-atlassian-cloud/client"
 )
 
 type Client struct {

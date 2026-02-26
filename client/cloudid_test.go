@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/surajsinghrajput/go-atlassian-cloud/types"
+	"github.com/surajrajput1024/go-atlassian-cloud/types"
 )
 
 func TestResolveCloudID_UseConfigWhenSet(t *testing.T) {

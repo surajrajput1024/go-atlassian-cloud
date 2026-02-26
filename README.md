@@ -5,7 +5,7 @@ Go client for Atlassian Cloud APIs (Jira, Confluence, etc.). Standalone module w
 ## Install
 
 ```bash
-go get github.com/surajsinghrajput/go-atlassian-cloud@v0.1.0
+go get github.com/surajrajput1024/go-atlassian-cloud@v0.1.0
 ```
 
 ## Usage
@@ -14,8 +14,8 @@ Preferred (canonical paths):
 
 ```go
 import (
-	atlassian "github.com/surajsinghrajput/go-atlassian-cloud/client"
-	"github.com/surajsinghrajput/go-atlassian-cloud/client/jira"
+	atlassian "github.com/surajrajput1024/go-atlassian-cloud/client"
+	"github.com/surajrajput1024/go-atlassian-cloud/client/jira"
 )
 
 cfg := &atlassian.Config{
@@ -28,12 +28,12 @@ cl, err := atlassian.NewClient(cfg, atlassian.DefaultOptions())
 j := jira.New(cl)
 ```
 
-Backward-compatible (root re-exports): use `github.com/surajsinghrajput/go-atlassian-cloud` and `.../jira` instead of `.../client` and `.../client/jira`.
+Backward-compatible (root re-exports): use `github.com/surajrajput1024/go-atlassian-cloud` and `.../jira` instead of `.../client` and `.../client/jira`.
 
 ```go
 import (
-	atlassian "github.com/surajsinghrajput/go-atlassian-cloud"
-	"github.com/surajsinghrajput/go-atlassian-cloud/jira"
+	atlassian "github.com/surajrajput1024/go-atlassian-cloud"
+	"github.com/surajrajput1024/go-atlassian-cloud/jira"
 )
 
 cfg := &atlassian.Config{
@@ -82,21 +82,21 @@ util/         Helpers (Int64String, IntString)
 In your provider's `go.mod`:
 
 ```go
-require github.com/surajsinghrajput/go-atlassian-cloud v0.1.0
+require github.com/surajrajput1024/go-atlassian-cloud v0.1.0
 ```
 
 For local development (provider and client in sibling dirs):
 
 ```go
-replace github.com/surajsinghrajput/go-atlassian-cloud => ../go-atlassian-cloud
+replace github.com/surajrajput1024/go-atlassian-cloud => ../go-atlassian-cloud
 ```
 
 In provider code:
 
 ```go
 import (
-	atlassian "github.com/surajsinghrajput/go-atlassian-cloud/client"
-	"github.com/surajsinghrajput/go-atlassian-cloud/client/jira"
+	atlassian "github.com/surajrajput1024/go-atlassian-cloud/client"
+	"github.com/surajrajput1024/go-atlassian-cloud/client/jira"
 )
 
 cfg := &atlassian.Config{
@@ -117,7 +117,7 @@ j := jira.New(cl)
 Releases follow [semver](https://semver.org/). Merges to `main` produce an automatic patch-version tag and GitHub Release. Pin in your module with a version:
 
 ```bash
-go get github.com/surajsinghrajput/go-atlassian-cloud@v<version>
+go get github.com/surajrajput1024/go-atlassian-cloud@v<version>
 ```
 
 ## Contributing

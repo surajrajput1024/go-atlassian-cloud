@@ -1,6 +1,6 @@
 package jira
 
-import jiraclient "github.com/surajsinghrajput/go-atlassian-cloud/client/jira"
+import jiraclient "github.com/surajrajput1024/go-atlassian-cloud/client/jira"
 
 type Client = jiraclient.Client
 type ProjectSearchParams = jiraclient.ProjectSearchParams

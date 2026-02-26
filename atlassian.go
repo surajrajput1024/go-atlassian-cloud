@@ -1,6 +1,6 @@
 package atlassian
 
-import "github.com/surajsinghrajput/go-atlassian-cloud/client"
+import "github.com/surajrajput1024/go-atlassian-cloud/client"
 
 type Config = client.Config
 type Options = client.Options

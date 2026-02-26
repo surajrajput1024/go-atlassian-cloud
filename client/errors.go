@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/surajsinghrajput/go-atlassian-cloud/client/retry"
+	"github.com/surajrajput1024/go-atlassian-cloud/client/retry"
 )
 
 type APIError struct {

@@ -5,8 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	atlassian "github.com/surajsinghrajput/go-atlassian-cloud/client"
-	"github.com/surajsinghrajput/go-atlassian-cloud/constants"
+	atlassian "github.com/surajrajput1024/go-atlassian-cloud/client"
+	"github.com/surajrajput1024/go-atlassian-cloud/constants"
 )
 
 func TestGetCurrentUser(t *testing.T) {
