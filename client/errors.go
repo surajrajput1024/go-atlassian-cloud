@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/surajsinghrajput/go-atlassian-cloud/client/retry"
 )
 
 type APIError struct {
@@ -54,5 +56,5 @@ func newAPIError(resp *http.Response) (*APIError, error) {
 }
 
 func IsRetryableStatusCode(code int) bool {
-	return code >= 500 || code == 429
+	return retry.IsRetryableStatusCode(code)
 }

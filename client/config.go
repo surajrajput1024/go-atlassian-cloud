@@ -4,6 +4,8 @@ import (
 	"errors"
 	"net/url"
 	"strings"
+
+	httputil "github.com/surajsinghrajput/go-atlassian-cloud/client/http"
 )
 
 type Config struct {
@@ -69,5 +71,5 @@ func (c *Config) ParseURL(path string) (*url.URL, error) {
 	if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") {
 		return url.Parse(path)
 	}
-	return parseURL(base, path)
+	return httputil.ParseURL(base, path)
 }

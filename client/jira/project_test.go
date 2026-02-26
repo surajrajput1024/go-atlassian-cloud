@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	atlassian "github.com/surajsinghrajput/go-atlassian-cloud"
+	atlassian "github.com/surajsinghrajput/go-atlassian-cloud/client"
 	"github.com/surajsinghrajput/go-atlassian-cloud/types"
 )
 

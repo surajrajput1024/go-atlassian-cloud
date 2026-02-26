@@ -2,11 +2,14 @@ package client
 
 import (
 	"bytes"
-	"encoding/base64"
 	"fmt"
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/surajsinghrajput/go-atlassian-cloud/client/auth"
+	httputil "github.com/surajsinghrajput/go-atlassian-cloud/client/http"
+	"github.com/surajsinghrajput/go-atlassian-cloud/client/retry"
 )
 
 type Client struct {
@@ -43,11 +46,11 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 		bodyBytes, _ = io.ReadAll(req.Body)
 		req.Body.Close()
 	}
-	c.setAuth(req)
+	auth.SetBasicAuth(req, c.cfg.Email, c.cfg.APIToken)
 	var lastErr error
 	for attempt := 0; attempt <= c.opts.MaxRetries; attempt++ {
 		if attempt > 0 {
-			time.Sleep(c.backoff(attempt))
+			time.Sleep(retry.Backoff(attempt, c.opts.RetryBackoffMin, c.opts.RetryBackoffMax))
 			if len(bodyBytes) > 0 {
 				req.Body = io.NopCloser(bytes.NewReader(bodyBytes))
 			}
@@ -59,7 +62,7 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 			lastErr = err
 			continue
 		}
-		if !IsRetryableStatusCode(resp.StatusCode) {
+		if !retry.IsRetryableStatusCode(resp.StatusCode) {
 			return resp, nil
 		}
 		_, _ = io.Copy(io.Discard, resp.Body)
@@ -71,37 +74,12 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	return nil, lastErr
 }
 
-func (c *Client) setAuth(req *http.Request) {
-	raw := c.cfg.Email + ":" + c.cfg.APIToken
-	req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(raw)))
-	if req.Header.Get("Content-Type") == "" {
-		req.Header.Set("Content-Type", "application/json")
-	}
-	req.Header.Set("Accept", "application/json")
-}
-
-func (c *Client) backoff(attempt int) time.Duration {
-	min := c.opts.RetryBackoffMin
-	max := c.opts.RetryBackoffMax
-	if min <= 0 {
-		min = DefaultRetryBackoffMin
-	}
-	if max <= 0 {
-		max = DefaultRetryBackoffMax
-	}
-	d := min * time.Duration(1<<uint(attempt))
-	if d > max {
-		return max
-	}
-	return d
-}
-
 func (c *Client) RestAPIURL() string {
 	return c.cfg.RestAPIURL()
 }
 
 func (c *Client) Get(path string) (*http.Response, error) {
-	u, err := parseURL(c.cfg.BaseURL(), path)
+	u, err := httputil.ParseURL(c.cfg.BaseURL(), path)
 	if err != nil {
 		return nil, fmt.Errorf("parse url: %w", err)
 	}

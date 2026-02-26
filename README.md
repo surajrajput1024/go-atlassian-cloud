@@ -10,6 +10,26 @@ go get github.com/surajsinghrajput/go-atlassian-cloud@v0.1.0
 
 ## Usage
 
+Preferred (canonical paths):
+
+```go
+import (
+	atlassian "github.com/surajsinghrajput/go-atlassian-cloud/client"
+	"github.com/surajsinghrajput/go-atlassian-cloud/client/jira"
+)
+
+cfg := &atlassian.Config{
+	Domain:   "your-site.atlassian.net",
+	Email:    "you@example.com",
+	APIToken: "your-api-token",
+}
+cl, err := atlassian.NewClient(cfg, atlassian.DefaultOptions())
+// ...
+j := jira.New(cl)
+```
+
+Backward-compatible (root re-exports): use `github.com/surajsinghrajput/go-atlassian-cloud` and `.../jira` instead of `.../client` and `.../client/jira`.
+
 ```go
 import (
 	atlassian "github.com/surajsinghrajput/go-atlassian-cloud"
@@ -32,15 +52,30 @@ proj, err := j.GetProject("PROJ")
 projects, err := j.GetProjects(jira.ProjectSearchParams{})
 ```
 
-## Module layout
+## Layout
 
-| Path | Purpose |
-|------|--------|
-| Root | `Config`, `NewClient`, `DefaultOptions`, `ResolveCloudID`, `RestAPIURL`, `Get` |
-| `jira/` | Jira API client: `New(cl)`, projects, project categories, issue types, statuses, priorities, fields, permission schemes |
-| `types/` | Request/response structs for Jira v3 |
-| `constants/` | Path segments and shared constants |
-| `util/` | Helpers (e.g. `Int64String`, `IntString`) |
+```
+client/
+  auth/       Basic auth and request headers
+  http/       URL parsing and path helpers (package httputil)
+  retry/      Backoff and retryable status logic
+  jira/       Jira API client: New(cl), projects, categories, issue types, statuses, priorities, fields, permission schemes
+  *.go        Config, Options, Client, ResolveCloudID, errors
+internal/
+examples/
+docs/
+types/        Request/response structs for Jira v3
+constants/    Jira path segments
+util/         Helpers (Int64String, IntString)
+```
+
+| Import | Purpose |
+|--------|--------|
+| `.../client` | Config, NewClient, DefaultOptions, ResolveCloudID, RestAPIURL, Get, APIError |
+| `.../client/jira` | jira.New(cl), GetProject, GetProjects, GetCurrentUser, etc. |
+| `.../types` | Request/response structs |
+| `.../constants` | Path constants |
+| `.../util` | Int64String, IntString |
 
 ## Use in a Terraform provider
 
@@ -56,12 +91,12 @@ For local development (provider and client in sibling dirs):
 replace github.com/surajsinghrajput/go-atlassian-cloud => ../go-atlassian-cloud
 ```
 
-In provider code, build the client from your config and pass it to Jira:
+In provider code:
 
 ```go
 import (
-	atlassian "github.com/surajsinghrajput/go-atlassian-cloud"
-	"github.com/surajsinghrajput/go-atlassian-cloud/jira"
+	atlassian "github.com/surajsinghrajput/go-atlassian-cloud/client"
+	"github.com/surajsinghrajput/go-atlassian-cloud/client/jira"
 )
 
 cfg := &atlassian.Config{
