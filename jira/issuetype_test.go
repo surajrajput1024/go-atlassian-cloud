@@ -14,7 +14,7 @@ func TestGetIssueTypes(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode([]types.IssueTypeResponse{{ID: "1", Name: "Task"}})
+		_ = json.NewEncoder(w).Encode([]types.IssueTypeResponse{{ID: "1", Name: "Task"}})
 	}))
 	defer srv.Close()
 	cfg := &atlassian.Config{Domain: "site.atlassian.net", Email: "u@e.com", APIToken: "tok"}

@@ -34,7 +34,7 @@ func TestClient_getJSON(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"accountId":"x","displayName":"y"}`))
+		_, _ = w.Write([]byte(`{"accountId":"x","displayName":"y"}`))
 	}))
 	defer srv.Close()
 	cfg := &atlassian.Config{Domain: "site.atlassian.net", Email: "u@e.com", APIToken: "tok"}

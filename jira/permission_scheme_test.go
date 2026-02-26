@@ -14,7 +14,7 @@ func TestGetPermissionSchemes(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(types.PermissionSchemeListResponse{
+		_ = json.NewEncoder(w).Encode(types.PermissionSchemeListResponse{
 			PermissionSchemes: []types.PermissionSchemeResponse{{ID: 1, Name: "Default"}},
 		})
 	}))

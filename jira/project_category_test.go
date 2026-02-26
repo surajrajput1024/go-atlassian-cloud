@@ -14,7 +14,7 @@ func TestGetProjectCategories(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode([]types.ProjectCategoryResponse{{ID: "1", Name: "Cat1"}})
+		_ = json.NewEncoder(w).Encode([]types.ProjectCategoryResponse{{ID: "1", Name: "Cat1"}})
 	}))
 	defer srv.Close()
 	cfg := &atlassian.Config{Domain: "site.atlassian.net", Email: "u@e.com", APIToken: "tok"}

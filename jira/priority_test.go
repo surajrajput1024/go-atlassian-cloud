@@ -14,7 +14,7 @@ func TestGetPriorities(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode([]types.PriorityResponse{{ID: "1", Name: "High"}})
+		_ = json.NewEncoder(w).Encode([]types.PriorityResponse{{ID: "1", Name: "High"}})
 	}))
 	defer srv.Close()
 	cfg := &atlassian.Config{Domain: "site.atlassian.net", Email: "u@e.com", APIToken: "tok"}

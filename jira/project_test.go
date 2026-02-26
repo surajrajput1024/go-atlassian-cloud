@@ -14,7 +14,7 @@ func TestGetProject(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(types.ProjectResponse{ID: "10000", Key: "PROJ", Name: "Test"})
+		_ = json.NewEncoder(w).Encode(types.ProjectResponse{ID: "10000", Key: "PROJ", Name: "Test"})
 	}))
 	defer srv.Close()
 	cfg := &atlassian.Config{Domain: "site.atlassian.net", Email: "u@e.com", APIToken: "tok"}
@@ -33,7 +33,7 @@ func TestGetProjects(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(types.ProjectSearchResponse{Total: 1, Values: []types.ProjectResponse{{Key: "P1"}}})
+		_ = json.NewEncoder(w).Encode(types.ProjectSearchResponse{Total: 1, Values: []types.ProjectResponse{{Key: "P1"}}})
 	}))
 	defer srv.Close()
 	cfg := &atlassian.Config{Domain: "site.atlassian.net", Email: "u@e.com", APIToken: "tok"}
