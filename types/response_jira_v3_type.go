@@ -1,5 +1,11 @@
 package types
 
+import (
+	"encoding/json"
+
+	"github.com/surajrajput1024/go-atlassian-cloud/util"
+)
+
 type CurrentUserResponse struct {
 	AccountID    string     `json:"accountId"`
 	AccountType  string     `json:"accountType"`
@@ -14,104 +20,114 @@ type CurrentUserResponse struct {
 	TimeZone     string     `json:"timeZone"`
 }
 
-type AvatarUrls struct {
-	Size16 string `json:"16x16"`
-	Size24 string `json:"24x24"`
-	Size32 string `json:"32x32"`
-	Size48 string `json:"48x48"`
-}
-
 type GroupItems struct {
 	Items []interface{} `json:"items"`
 	Size  int           `json:"size"`
 }
 
-type ProjectResponse struct {
-	ID              string           `json:"id"`
-	Key             string           `json:"key"`
-	Name            string           `json:"name"`
-	Self            string           `json:"self"`
-	Description     string           `json:"description"`
-	Style           string           `json:"style"`
-	Simplified      bool             `json:"simplified"`
-	ProjectCategory *ProjectCategory `json:"projectCategory"`
-	AvatarUrls      *AvatarUrls      `json:"avatarUrls"`
-	AssigneeType    string           `json:"assigneeType"`
-	Lead            *UserRef         `json:"lead"`
-	Email           string           `json:"email"`
-}
-
-type ProjectCategory struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Self        string `json:"self"`
-}
-
-type UserRef struct {
-	AccountID   string `json:"accountId"`
-	DisplayName string `json:"displayName"`
-	Active      bool   `json:"active"`
-	Self        string `json:"self"`
-}
-
-type ProjectSearchResponse struct {
-	StartAt    int               `json:"startAt"`
-	MaxResults int               `json:"maxResults"`
-	Total      int               `json:"total"`
-	IsLast     bool              `json:"isLast"`
-	NextPage   string            `json:"nextPage"`
-	Self       string            `json:"self"`
-	Values     []ProjectResponse `json:"values"`
-}
-
-type ProjectCreateResponse struct {
-	ID   string `json:"id"`
-	Key  string `json:"key"`
-	Self string `json:"self"`
-}
-
-type IssueTypeResponse struct {
-	ID             string `json:"id"`
-	Name           string `json:"name"`
-	Description    string `json:"description"`
-	Self           string `json:"self"`
-	Subtask        bool   `json:"subtask"`
-	HierarchyLevel int    `json:"hierarchyLevel"`
-	IconURL        string `json:"iconUrl"`
-}
-
 type StatusResponse struct {
-	ID             string         `json:"id"`
-	Name           string         `json:"name"`
-	Description    string         `json:"description"`
-	Self           string         `json:"self"`
+	ID             string          `json:"-"`
+	Name           string          `json:"name"`
+	Description    string          `json:"description"`
+	Self           string          `json:"self"`
 	StatusCategory *StatusCategory `json:"statusCategory"`
 }
 
+func (r *StatusResponse) UnmarshalJSON(data []byte) error {
+	type statusResponse StatusResponse
+	var aux struct {
+		statusResponse
+		ID json.RawMessage `json:"id"`
+	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	*r = StatusResponse(aux.statusResponse)
+	id, err := util.ParseStringOrNumber(aux.ID)
+	if err != nil {
+		return err
+	}
+	r.ID = id
+	return nil
+}
+
 type StatusCategory struct {
-	ID        string `json:"id"`
+	ID        string `json:"-"`
 	Key       string `json:"key"`
 	Name      string `json:"name"`
 	Self      string `json:"self"`
 	ColorName string `json:"colorName"`
 }
 
+func (c *StatusCategory) UnmarshalJSON(data []byte) error {
+	type statusCategory StatusCategory
+	var aux struct {
+		statusCategory
+		ID json.RawMessage `json:"id"`
+	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	*c = StatusCategory(aux.statusCategory)
+	id, err := util.ParseStringOrNumber(aux.ID)
+	if err != nil {
+		return err
+	}
+	c.ID = id
+	return nil
+}
+
 type PriorityResponse struct {
-	ID          string `json:"id"`
+	ID          string `json:"-"`
 	Name        string `json:"name"`
 	Self        string `json:"self"`
 	IconURL     string `json:"iconUrl"`
 	StatusColor string `json:"statusColor"`
 }
 
+func (r *PriorityResponse) UnmarshalJSON(data []byte) error {
+	type priorityResponse PriorityResponse
+	var aux struct {
+		priorityResponse
+		ID json.RawMessage `json:"id"`
+	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	*r = PriorityResponse(aux.priorityResponse)
+	id, err := util.ParseStringOrNumber(aux.ID)
+	if err != nil {
+		return err
+	}
+	r.ID = id
+	return nil
+}
+
 type FieldResponse struct {
-	ID          string       `json:"id"`
+	ID          string       `json:"-"`
 	Name        string       `json:"name"`
 	Custom      bool         `json:"custom"`
 	Schema      *FieldSchema `json:"schema"`
 	Description string       `json:"description"`
 	Self        string       `json:"self"`
+}
+
+func (r *FieldResponse) UnmarshalJSON(data []byte) error {
+	type fieldResponse FieldResponse
+	var aux struct {
+		fieldResponse
+		ID json.RawMessage `json:"id"`
+	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	*r = FieldResponse(aux.fieldResponse)
+	id, err := util.ParseStringOrNumber(aux.ID)
+	if err != nil {
+		return err
+	}
+	r.ID = id
+	return nil
 }
 
 type FieldSchema struct {
@@ -121,20 +137,13 @@ type FieldSchema struct {
 	CustomID int    `json:"customId,omitempty"`
 }
 
-type ProjectCategoryResponse struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Self        string `json:"self"`
-}
-
 type PermissionSchemeResponse struct {
-	ID          int                `json:"id"`
-	Name        string             `json:"name"`
-	Description string             `json:"description"`
-	Self        string             `json:"self"`
-	Expand      string             `json:"expand"`
-	Permissions []PermissionGrant  `json:"permissions,omitempty"`
+	ID          int               `json:"id"`
+	Name        string            `json:"name"`
+	Description string            `json:"description"`
+	Self        string            `json:"self"`
+	Expand      string            `json:"expand"`
+	Permissions []PermissionGrant `json:"permissions,omitempty"`
 }
 
 type PermissionSchemeListResponse struct {
