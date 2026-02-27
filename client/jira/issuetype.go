@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"net/url"
 
 	"github.com/surajrajput1024/go-atlassian-cloud/constants"
@@ -9,7 +10,7 @@ import (
 
 func (j *Client) GetIssueTypes() ([]types.IssueTypeResponse, error) {
 	var out []types.IssueTypeResponse
-	if err := j.getJSON(j.path(constants.JiraPathIssueType), &out); err != nil {
+	if err := j.doJSON(context.Background(), "GET", j.path(constants.JiraPathIssueType), nil, &out); err != nil {
 		return nil, err
 	}
 	return out, nil
@@ -18,7 +19,7 @@ func (j *Client) GetIssueTypes() ([]types.IssueTypeResponse, error) {
 func (j *Client) GetIssueType(id string) (*types.IssueTypeResponse, error) {
 	var out types.IssueTypeResponse
 	path := j.path(constants.JiraPathIssueType, url.PathEscape(id))
-	if err := j.getJSON(path, &out); err != nil {
+	if err := j.doJSON(context.Background(), "GET", path, nil, &out); err != nil {
 		return nil, err
 	}
 	return &out, nil

@@ -24,8 +24,10 @@ cfg := &atlassian.Config{
 	APIToken: "your-api-token",
 }
 cl, err := atlassian.NewClient(cfg, atlassian.DefaultOptions())
+// Or with functional options:
+// cl, err = atlassian.NewClientWithOptions(cfg, atlassian.WithTimeout(10*time.Second), atlassian.WithRetries(2, 1*time.Second, 3*time.Second))
 // ...
-j := jira.New(cl)
+j := jira.New(cl)  // j implements same API; j.Projects, j.PermissionSchemes, etc. are available for direct service access
 ```
 
 Backward-compatible (root re-exports): use `github.com/surajrajput1024/go-atlassian-cloud` and `.../jira` instead of `.../client` and `.../client/jira`.
@@ -59,7 +61,9 @@ client/
   auth/       Basic auth and request headers
   http/       URL parsing and path helpers (package httputil)
   retry/      Backoff and retryable status logic
-  jira/       Jira API client: New(cl), projects, categories, issue types, statuses, priorities, fields, permission schemes
+  jira/       Jira API client: New(cl), projects, categories, issue types, statuses, priorities, fields,
+              permission schemes and grants, project permission scheme attachment, project role actors,
+              groups, workflow scheme project associations
   *.go        Config, Options, Client, ResolveCloudID, errors
 internal/
 examples/
@@ -71,10 +75,11 @@ util/         Helpers (Int64String, IntString)
 
 | Import | Purpose |
 |--------|--------|
-| `.../client` | Config, NewClient, DefaultOptions, ResolveCloudID, RestAPIURL, Get, APIError |
-| `.../client/jira` | jira.New(cl), GetProject, GetProjects, GetCurrentUser, etc. |
+| `.../client` | Config, NewClient, NewClientWithOptions, DefaultOptions, WithTimeout, WithTransport, WithRetries, RESTDoer, DoJSON, GetWithContext, DoWithContext, ResolveCloudID, APIError, ErrNotFound, ErrUnauthorized, ErrForbidden, ErrBadRequest |
+| `.../client/jira` | jira.New(do), Client.Projects, PermissionSchemes, ProjectPermissionScheme, ProjectRoles, Groups, WorkflowSchemeProjects; GetProject, GetProjects, GetCurrentUser, permission schemes/grants, project permission scheme, project role actors, groups, workflow scheme project |
 | `.../types` | Request/response structs |
-| `.../constants` | Path constants |
+| `.../constants` | Path constants (re-exports from constants/jira) |
+| `.../constants/jira` | Jira path constants by product |
 | `.../util` | Int64String, IntString |
 
 ## Use in a Terraform provider

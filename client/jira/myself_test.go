@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -11,15 +12,12 @@ import (
 
 func TestGetCurrentUser(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"accountId":"acc1","displayName":"Test User","emailAddress":"u@e.com"}`))
+		writeJSON(w, http.StatusOK, map[string]string{
+			"accountId": "acc1", "displayName": "Test User", "emailAddress": "u@e.com",
+		})
 	}))
 	defer srv.Close()
-	cfg := &atlassian.Config{Domain: "site.atlassian.net", Email: "u@e.com", APIToken: "tok"}
-	cl, _ := atlassian.NewClient(cfg, atlassian.Options{MaxRetries: 0})
-	j := New(cl)
-	_ = constants.JiraPathMyself
+	j := testJiraClient(t, atlassian.Options{MaxRetries: 0})
 	path := j.path(constants.JiraPathMyself)
 	if path == "" {
 		t.Fatal("path empty")
@@ -29,10 +27,10 @@ func TestGetCurrentUser(t *testing.T) {
 		DisplayName  string `json:"displayName"`
 		EmailAddress string `json:"emailAddress"`
 	}
-	if err := j.getJSON(srv.URL, &out); err != nil {
+	if err := j.doJSON(context.Background(), "GET", srv.URL, nil, &out); err != nil {
 		t.Fatal(err)
 	}
 	if out.AccountID != "acc1" {
-		t.Errorf("accountId = %q", out.AccountID)
+		t.Errorf(msgAccountIDFormat, out.AccountID)
 	}
 }

@@ -168,3 +168,103 @@ type PermissionGrantsResponse struct {
 	Expand      string            `json:"expand"`
 	Permissions []PermissionGrant `json:"permissions"`
 }
+
+// ProjectRolesMapResponse is the response from GET project/{id}/role: role name -> role URL.
+type ProjectRolesMapResponse map[string]string
+
+// ProjectRoleResponse is the full project role with actors (GET project/{id}/role/{roleId}).
+type ProjectRoleResponse struct {
+	ID          int64              `json:"id"`
+	Name        string             `json:"name"`
+	Description string             `json:"description"`
+	Self        string             `json:"self"`
+	Actors      []ProjectRoleActor `json:"actors"`
+	Scope       *ProjectRoleScope  `json:"scope,omitempty"`
+}
+
+// ProjectRoleActor represents a user or group in a project role.
+type ProjectRoleActor struct {
+	ID          int64               `json:"id"`
+	DisplayName string              `json:"displayName"`
+	Name        string              `json:"name"`
+	Type        string              `json:"type"`
+	ActorUser   *ProjectRoleUser    `json:"actorUser,omitempty"`
+	ActorGroup  *ProjectRoleGroup   `json:"actorGroup,omitempty"`
+}
+
+// ProjectRoleUser is the user part of an actor.
+type ProjectRoleUser struct {
+	AccountID string `json:"accountId"`
+}
+
+// ProjectRoleGroup is the group part of an actor.
+type ProjectRoleGroup struct {
+	GroupID     string `json:"groupId"`
+	Name        string `json:"name"`
+	DisplayName string `json:"displayName"`
+}
+
+// ProjectRoleScope is the scope of a project role.
+type ProjectRoleScope struct {
+	Type    string         `json:"type"`
+	Project *ProjectRef    `json:"project,omitempty"`
+}
+
+// ProjectRef is a minimal project reference.
+type ProjectRef struct {
+	ID   string `json:"id"`
+	Key  string `json:"key"`
+	Name string `json:"name"`
+}
+
+// ProjectRoleDetailsItem is one entry from GET project/{id}/roledetails.
+type ProjectRoleDetailsItem struct {
+	ID               int64  `json:"id"`
+	Name             string `json:"name"`
+	Description      string `json:"description"`
+	Self             string `json:"self"`
+	Admin            bool   `json:"admin"`
+	Default          bool   `json:"default"`
+	RoleConfigurable bool   `json:"roleConfigurable"`
+	TranslatedName   string `json:"translatedName"`
+	Type             string `json:"type"`
+}
+
+// GroupResponse is the response from GET/POST group (group details and optional users).
+type GroupResponse struct {
+	GroupID string       `json:"groupId"`
+	Name    string       `json:"name"`
+	Self    string       `json:"self"`
+	Expand  string       `json:"expand,omitempty"`
+	Users   *GroupUsers  `json:"users,omitempty"`
+}
+
+// GroupUsers is the paginated users list in a group.
+type GroupUsers struct {
+	Size       int        `json:"size"`
+	StartIndex int        `json:"start-index"`
+	EndIndex   int        `json:"end-index"`
+	MaxResults int        `json:"max-results"`
+	Items      []UserRef  `json:"items,omitempty"`
+}
+
+// WorkflowSchemeProjectAssociationsResponse is the response from GET workflowscheme/project.
+type WorkflowSchemeProjectAssociationsResponse struct {
+	Values []WorkflowSchemeProjectAssociation `json:"values"`
+}
+
+// WorkflowSchemeProjectAssociation links a workflow scheme to project IDs.
+type WorkflowSchemeProjectAssociation struct {
+	ProjectIDs     []string         `json:"projectIds"`
+	WorkflowScheme WorkflowSchemeRef `json:"workflowScheme"`
+}
+
+// WorkflowSchemeRef is a minimal workflow scheme reference.
+type WorkflowSchemeRef struct {
+	ID                int64             `json:"id"`
+	Name              string            `json:"name"`
+	Description       string            `json:"description"`
+	Self              string            `json:"self"`
+	DefaultWorkflow   string            `json:"defaultWorkflow,omitempty"`
+	IssueTypeMappings map[string]string  `json:"issueTypeMappings,omitempty"`
+}

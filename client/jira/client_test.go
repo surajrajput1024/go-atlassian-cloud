@@ -1,6 +1,7 @@
 package jira
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -9,45 +10,39 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	cfg := &atlassian.Config{Domain: "site.atlassian.net", Email: "u@e.com", APIToken: "tok"}
-	cl, err := atlassian.NewClient(cfg, atlassian.DefaultOptions())
+	cl, err := atlassian.NewClient(testConfig(), atlassian.DefaultOptions())
 	if err != nil {
 		t.Fatal(err)
 	}
 	j := New(cl)
-	if j == nil || j.c != cl {
+	if j == nil || j.do != cl {
 		t.Error("New returned nil or wrong client")
 	}
 }
 
-func TestClient_path(t *testing.T) {
-	cfg := &atlassian.Config{Domain: "site.atlassian.net", Email: "u@e.com", APIToken: "tok"}
-	cl, _ := atlassian.NewClient(cfg, atlassian.DefaultOptions())
+func TestClientPath(t *testing.T) {
+	cl, _ := atlassian.NewClient(testConfig(), atlassian.DefaultOptions())
 	j := New(cl)
 	p := j.path("myself")
 	if p == "" || p != cl.RestAPIURL()+"/myself" {
-		t.Errorf("path(myself) = %q", p)
+		t.Errorf(msgPathFormat, p)
 	}
 }
 
-func TestClient_getJSON(t *testing.T) {
+func TestClientGetJSON(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"accountId":"x","displayName":"y"}`))
+		writeJSON(w, http.StatusOK, map[string]string{"accountId": "x", "displayName": "y"})
 	}))
 	defer srv.Close()
-	cfg := &atlassian.Config{Domain: "site.atlassian.net", Email: "u@e.com", APIToken: "tok"}
-	cl, _ := atlassian.NewClient(cfg, atlassian.Options{MaxRetries: 0})
-	j := New(cl)
+	j := testJiraClient(t, atlassian.Options{MaxRetries: 0})
 	var out struct {
 		AccountID   string `json:"accountId"`
 		DisplayName string `json:"displayName"`
 	}
-	if err := j.getJSON(srv.URL, &out); err != nil {
+	if err := j.doJSON(context.Background(), "GET", srv.URL, nil, &out); err != nil {
 		t.Fatal(err)
 	}
 	if out.AccountID != "x" || out.DisplayName != "y" {
-		t.Errorf("out = %+v", out)
+		failOut(t, out)
 	}
 }

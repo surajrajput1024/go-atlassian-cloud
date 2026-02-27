@@ -9,6 +9,8 @@ import (
 	"github.com/surajrajput1024/go-atlassian-cloud/types"
 )
 
+const testContentTypeJSON = "application/json"
+
 func TestResolveCloudID_UseConfigWhenSet(t *testing.T) {
 	cfg := &Config{
 		Domain:   "site.atlassian.net",
@@ -56,7 +58,7 @@ type mockRoundTripper struct {
 
 func (m *mockRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	h := make(http.Header)
-	h.Set("Content-Type", "application/json")
+	h.Set("Content-Type", testContentTypeJSON)
 	return &http.Response{
 		StatusCode: m.status,
 		Header:     h,

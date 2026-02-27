@@ -2,6 +2,7 @@ package client
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -9,11 +10,33 @@ import (
 	"github.com/surajrajput1024/go-atlassian-cloud/client/retry"
 )
 
+var (
+	ErrNotFound     = errors.New("resource not found")
+	ErrUnauthorized = errors.New("unauthorized")
+	ErrForbidden    = errors.New("forbidden")
+	ErrBadRequest   = errors.New("bad request")
+)
+
 type APIError struct {
 	StatusCode    int
 	Body          []byte
 	ErrorMessages []string
 	Errors        map[string]string
+}
+
+func (e *APIError) Unwrap() error {
+	switch e.StatusCode {
+	case http.StatusNotFound:
+		return ErrNotFound
+	case http.StatusUnauthorized:
+		return ErrUnauthorized
+	case http.StatusForbidden:
+		return ErrForbidden
+	case http.StatusBadRequest:
+		return ErrBadRequest
+	default:
+		return nil
+	}
 }
 
 func (e *APIError) Error() string {
@@ -26,6 +49,16 @@ func (e *APIError) Error() string {
 		}
 	}
 	return fmt.Sprintf("api error %d: %s", e.StatusCode, string(e.Body))
+}
+
+func wrapAPIError(ae *APIError) error {
+	if ae == nil {
+		return nil
+	}
+	if w := ae.Unwrap(); w != nil {
+		return fmt.Errorf("%w: %s", w, ae.Error())
+	}
+	return ae
 }
 
 type atlassianErrorBody struct {

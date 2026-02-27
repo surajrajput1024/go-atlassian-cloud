@@ -21,3 +21,33 @@ func DefaultOptions() Options {
 		RetryBackoffMax: DefaultRetryBackoffMax,
 	}
 }
+
+type Option func(*Options)
+
+func WithTimeout(d time.Duration) Option {
+	return func(o *Options) { o.Timeout = d }
+}
+
+func WithTransport(rt http.RoundTripper) Option {
+	return func(o *Options) { o.Transport = rt }
+}
+
+func WithRetries(n int, backoffMin, backoffMax time.Duration) Option {
+	return func(o *Options) {
+		o.MaxRetries = n
+		o.RetryBackoffMin = backoffMin
+		o.RetryBackoffMax = backoffMax
+	}
+}
+
+func UseOptions(opts Options) Option {
+	return func(o *Options) { *o = opts }
+}
+
+func applyOptions(opts []Option) Options {
+	o := DefaultOptions()
+	for _, f := range opts {
+		f(&o)
+	}
+	return o
+}
