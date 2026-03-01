@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sort"
 
 	"github.com/surajrajput1024/go-atlassian-cloud/client/retry"
 )
@@ -44,21 +45,29 @@ func (e *APIError) Error() string {
 		return fmt.Sprintf("api error %d: %s", e.StatusCode, e.ErrorMessages[0])
 	}
 	if len(e.Errors) > 0 {
-		for k, v := range e.Errors {
-			return fmt.Sprintf("api error %d: %s: %s", e.StatusCode, k, v)
+		keys := make([]string, 0, len(e.Errors))
+		for k := range e.Errors {
+			keys = append(keys, k)
 		}
+		sort.Strings(keys)
+		k := keys[0]
+		return fmt.Sprintf("api error %d: %s: %s", e.StatusCode, k, e.Errors[k])
 	}
 	return fmt.Sprintf("api error %d: %s", e.StatusCode, string(e.Body))
 }
+
+// wrappedAPIError ensures *APIError stays in the error chain so errors.As(err, &apiErr) works
+// while APIError.Unwrap() still provides sentinels for errors.Is(err, ErrNotFound) etc.
+type wrappedAPIError struct{ apiErr *APIError }
+
+func (e *wrappedAPIError) Error() string { return e.apiErr.Error() }
+func (e *wrappedAPIError) Unwrap() error { return e.apiErr }
 
 func wrapAPIError(ae *APIError) error {
 	if ae == nil {
 		return nil
 	}
-	if w := ae.Unwrap(); w != nil {
-		return fmt.Errorf("%w: %s", w, ae.Error())
-	}
-	return ae
+	return &wrappedAPIError{apiErr: ae}
 }
 
 type atlassianErrorBody struct {

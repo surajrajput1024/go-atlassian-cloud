@@ -1,6 +1,8 @@
 package client
 
 import (
+	"errors"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 )
@@ -32,5 +34,20 @@ func TestNewAPIError_WithBody(t *testing.T) {
 	}
 	if ae.StatusCode != 400 || len(ae.ErrorMessages) != 1 {
 		t.Errorf("StatusCode=%d ErrorMessages=%v", ae.StatusCode, ae.ErrorMessages)
+	}
+}
+
+func TestWrapAPIError_IsAndAs(t *testing.T) {
+	ae := &APIError{StatusCode: http.StatusNotFound, ErrorMessages: []string{"not found"}}
+	err := wrapAPIError(ae)
+	if err == nil {
+		t.Fatal("wrapAPIError must not return nil for non-nil APIError")
+	}
+	if !errors.Is(err, ErrNotFound) {
+		t.Error("errors.Is(err, ErrNotFound) should be true")
+	}
+	var got *APIError
+	if !errors.As(err, &got) || got != ae {
+		t.Errorf("errors.As(err, &apiErr) should recover *APIError; got %v", got)
 	}
 }
