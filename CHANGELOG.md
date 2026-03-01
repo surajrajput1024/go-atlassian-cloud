@@ -9,6 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- (Add new features here for the next release.)
+
+### Changed
+
+- (List breaking or non-breaking changes here.)
+
+### Fixed
+
+- (List bug fixes here.)
+
+### Security
+
+- (List security-related changes here.)
+
+---
+
+## [0.1.9] - 2026-03-01
+
+### Added
+
 - Root package `github.com/surajrajput1024/go-atlassian-cloud` now re-exports `ErrNotFound`, `ErrUnauthorized`, `ErrForbidden`, `ErrBadRequest` so callers can use `errors.Is(err, atlassian.ErrNotFound)` without importing `client`.
 
 ### Changed
@@ -19,10 +39,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `APIError.Error()` no longer relies on non-deterministic map iteration when formatting `Errors`; first key is chosen after sorting for stable output.
 
-### Security
-
-- (List security-related changes here.)
-
 ---
 
 ## [0.1.8] and earlier
@@ -31,5 +47,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Config validation, retries with backoff, typed API errors (`APIError`, `ErrNotFound`, `ErrUnauthorized`, etc.).
 - Context-aware API methods where applicable (`GetProjectWithContext`, `CreateProjectWithContext`, etc.).
 
-[Unreleased]: https://github.com/surajrajput1024/go-atlassian-cloud/compare/v0.1.8...HEAD
+[Unreleased]: https://github.com/surajrajput1024/go-atlassian-cloud/compare/v0.1.9...HEAD
+[0.1.9]: https://github.com/surajrajput1024/go-atlassian-cloud/releases/tag/v0.1.9
 [0.1.8]: https://github.com/surajrajput1024/go-atlassian-cloud/releases/tag/v0.1.8
